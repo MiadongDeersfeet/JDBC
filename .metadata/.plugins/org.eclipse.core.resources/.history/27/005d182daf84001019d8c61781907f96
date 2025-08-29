@@ -1,0 +1,103 @@
+package com.homework.employee.run;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class SelectRun {
+
+	public static void main(String[] args) {
+		/*1. Employee 프로젝트를 생성한 후
+		실행 클래스를 두 개 만들어서
+		하나의 클래스에서는 Employee 테이블에 사용자에게 값을 입력받아서
+		INSERT를 할 수 있는 기능
+		하나의 클래스에서는 Employee테이블에 존재하는 모든 행을 SELECT해서 콘솔창에 출력하는 기능을 구현하시오
+*/// JDBC 맛보기
+		/*
+		 * 1. DBeaver 실행(클라이언트 프로그램 실행)
+		 * 
+		 * 2. 접속하기 누름
+		 * 
+		 * 3. DBMS 선택
+		 * 
+		 * 4. ojdbc.jar --> 등록    ※ 커넥션 안돼서 선생님이 보내주신 자료
+		 * 
+		 * 5. IP주소, PORT번호, 사용자계정, 비밀번호 연결
+		 * 
+		 * 6. 새 SQL편집기
+		 * 
+		 * 7. INSERT문 작성 => INSERT INTO 테이블명 VALUES('값', '값', '값);
+		 * 
+		 * 8. SQL문을 실행
+		 * 
+		 * 9. UpdatedRows : 1      <= 결과가 이렇게 나온다구요.
+		 * 
+		 * 10. COMMIT;
+		 */
+		
+		// 0. 변수 선언
+		// 사용자로부터 값을 입력받아서 DBMS로 전달 => 테이블에 INSERT
+		// 실행할 SQL문(완성된 형태로 만들어주기)
+		// 1) JDBC Drive 등록 -> ojdbc.jarㄴ
+		// Driver 등록은 프로그램 실행 시 딱 1회만 하면 된다.
+		// 2) DB서버와의 연결(IP주소, PORT번호, 사용자이름, 비밀번호)
+		// 3) 새 SQL편집기 열기
+		// 4) SQL문 실행
+		// Updated Rows : N 
+		// Updated Rows : N
+		// Updated Rows : N
+		// DML(INSERT, UPDATE, DELETE) => 처리된 행의 개수
+		// executeUpdate(DML문) : int (반환타입)
+		// 5) 트랜잭션처리
+		
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rset = null;
+		
+		String sql = """
+				       SELECT
+				              EMP_ID
+				            , EMP_NAME
+				            , EMP_NO
+				            , EMAIL
+				            , PHONE
+				            , DEPT_CODE
+				            , JOB_CODE
+				            , SAL_LEVEL
+				            , SALARY
+				            , BONUS
+				            , MANAGER_ID
+				            , HIRE_DATE
+					     FROM 
+					          EMPLOYEE
+					    ORDER
+					       BY HIRE_DATE     
+				""";
+		try {
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		
+		conn = DriverManager.getConnection("jdbc:oracle:thin:@115.90.212.20:10000:XE",
+										   "KYK03"
+										 , "KYK031234");
+		System.out.println("DB서버 접속 성공!");
+		
+		stmt = conn.createStatement();
+		
+		rset = stmt.executeQuery(sql);
+		
+		
+				
+		
+		} catch(ClassNotFoundException e) {
+			
+		} catch(SQLException e) {
+			
+		}
+		
+		
+		
+	}
+
+}

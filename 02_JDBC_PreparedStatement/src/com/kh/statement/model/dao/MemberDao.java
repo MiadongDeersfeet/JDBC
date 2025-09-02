@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.kh.statement.model.dto.PasswordDTO;
 import com.kh.statement.model.vo.Member;
 
 public class MemberDao {
@@ -461,8 +462,126 @@ public List<Member> findByKeyword(String keyword) {
 		   }
 } catch(SQLException e) {
 	e.printStackTrace();
-}
-}
-}
+   }
+  }
+ }
+
+ public int update(PasswordDTO pd) {
+	 // update 할 일 : 전달받은 값을 가지고 값이 존재하는 행을 찾아서 정보를 갱신해줌
+	 // 얘가 하는 일 : SQL문 실행하고 결과 받아오기
+
+	 int result = 0;
+	 Connection conn = null;
+	 PreparedStatement pstmt = null;
+	 String sql = """
+	 		        UPDATE
+	 		               MEMBER
+	 		           SET
+	 		               USERPWD = ?
+	 		         WHERE
+	 		               USERID = ?
+	 		           AND
+	 		               USERPWD = ?
+	 		""";
+	try {
+		
+	 Class.forName(DRIVER);
+	 conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+	 conn.setAutoCommit(false);
+	 
+	 pstmt = conn.prepareStatement(sql);
+	 pstmt.setString(1, pd.getNewPassword());
+	 pstmt.setString(2, pd.getUserId());
+	 pstmt.setString(3, pd.getUserPwd());
+	 
+	 result = pstmt.executeUpdate();
+	 
+	 if(result > 0) {
+		 conn.commit();
+	 }
+	 
+	 
+	 
+	} catch(ClassNotFoundException e) {
+		e.printStackTrace();
+	} catch(SQLException e) {
+		e.printStackTrace();
+	} finally {
+		try {
+		if(pstmt != null) {
+		pstmt.close();
+		}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} try {
+			if(conn != null) {
+				conn.close();
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+	}
+		 return result;
 }
 
+ }
+ 
+ public int delete(Member member) {
+	 int result = 0;
+	 Connection conn = null;
+	 PreparedStatement pstmt = null;
+	 
+	 String sql = """
+	 		        DELETE
+	 		          FROM
+	 		               MEMBER
+	 		         WHERE
+	 		               USERID = ?
+	 		           AND
+	 		               USERPWD = ?
+	 		                             
+	 		""";
+	 try {
+		 
+	 Class.forName(DRIVER); 
+	 
+	 conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+	 
+	 pstmt = conn.prepareStatement(sql);
+	 
+	 pstmt.setString(1, member.getUserId());
+	 pstmt.setString(2, member.getUserPwd());
+	 
+	 result = pstmt.executeUpdate();
+	 
+	 if(result > 0) {
+		conn.commit(); 
+	 }
+	 
+	 
+	 } catch(ClassNotFoundException e) {
+		 e.printStackTrace();
+	 } catch(SQLException e) {
+		 e.printStackTrace();
+	 } finally {
+		 try {
+			 if(pstmt != null) {
+				 pstmt.close();
+			 }
+		 } catch(SQLException e) {
+			 e.printStackTrace();
+		 } try {
+			 if(conn != null) {
+				 conn.close();
+			 } 
+		 } catch(SQLException e) {
+				 e.printStackTrace();
+			 }
+		 }
+  return result;
+	 }
+	 
+ 
+ 
+ }
+ 
+ 

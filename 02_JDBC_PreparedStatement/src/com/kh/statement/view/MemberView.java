@@ -24,6 +24,19 @@ public class MemberView {
 	 * 프로그램 구동 시 사용자에게 메인화면을 출력해주는 메소드입니다.
 	 */
 	public void mainMenu() {
+		/*
+		 * 2025 / 09 / 02 오늘의 실습 겸 숙제
+		 * 
+		 * 어제했던 결과물을 -> PreparedStatement 버전으로 변경하기
+		 * 
+		 * 나만의 테이블에 INSERT 
+		 * 전체조회
+		 * 유니크제약조건 걸려있는 컬럼으로 조회
+		 * LIKE 키워드 써서 조회하는 거
+		 * 컬럼값 수정하는 기능
+		 * 한행 삭제하는 기능
+		 * 
+		 */
 		while(true) {
 			System.out.println(" ---- 회원 관리 프로그램 ---- ");
 			System.out.println("1. 회원 추가");

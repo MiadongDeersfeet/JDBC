@@ -3,6 +3,7 @@ package com.kh.statement.controller;
 import java.util.List;
 
 import com.kh.statement.model.dao.MemberDao;
+import com.kh.statement.model.dto.PasswordDTO;
 import com.kh.statement.model.vo.Member;
 
 /**
@@ -48,5 +49,46 @@ public class MemberController {
 		
 		
 	}
-
+	
+public Member findById(String userId) {
+		
+		// 1. 데이터 가공 => 넘어가넘어가~
+		
+		// 2. 요청처리 => DAO 객체 생성 후 메소드 호출
+		Member member = new MemberDao().findById(userId);
+		
+		// 3. 요청 처리 후 결과값을 View에게 반환
+		return member;
+		
+	}
+	
+	public int delete(String userId, String userPwd) {
+		// 1. 데이터 가공
+		Member member = new Member();
+		member.setUserId(userId);
+		member.setUserPwd(userPwd);
+		
+		// 2. 요청 처리
+		int result = new MemberDao().delete(member);
+		
+		return result;
+		
+	}
+	
+	public List<Member> findByKeyword(String keyword) {
+		// 결과값이 나중에 어떻게 돌아올까??
+		// SELECT -> ResultSet -> Member -> List<Member>
+		List<Member> members = new MemberDao().findByKeyword(keyword);
+		return members;
+		
+	}
+	
+	public int update(String userId, String userPwd, String newPassword) {
+		PasswordDTO pd = new PasswordDTO(userId, userPwd, newPassword);
+		
+		int result = new MemberDao().update(pd);
+		
+		return result;
+	}
+	
 }

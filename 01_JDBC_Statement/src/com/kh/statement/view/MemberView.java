@@ -40,10 +40,10 @@ public class MemberView {
 			switch(menuNo) {
 			case 1 : save(); break;
 			case 2 : findAll(); break;
-			case 3 : break;
-			case 4 : break;
-			case 5 : break;
-			case 6 : break;
+			case 3 : findById(); break;
+			case 4 : findByKeyword(); break;
+			case 5 : update(); break;
+			case 6 : delete(); break;
 			case 9 : System.out.println("프로그램을 종료합니다."); return; // 메인메소드로 리턴
 			default : System.out.println("잘못된 메뉴입니다.");
 			;
@@ -112,17 +112,101 @@ public class MemberView {
 				System.out.println("이메일 : " + member.getEmail() + ", ");
 				System.out.println("가입일 : " + member.getEnrollDate());
 				System.out.println();
-				
-			}
+			
+			
 			
 		}
+		}
+	}
+		
+	private void findById() {
+			
+		System.out.println("\n아이디로 검색 서비스입니다.");
+		System.out.print("아이디를 입력해주세요. > ");
+		String userId = sc.nextLine();
+			
+		Member member = mc.findById(userId);
+			
+		if(member != null) {
+			System.out.println(userId + "님의 검색 결과입니다.");
+			System.out.println("====================================");
+			System.out.println("아이디 : " + member.getUserId() + ", ");
+			System.out.println("비밀번호 : " + member.getUserPwd() + ", ");
+			System.out.println("이름 : " + member.getUserName() + ", ");
+			System.out.println("이메일 : " + member.getEmail() + ", ");
+			System.out.println("가입일 : " + member.getEnrollDate() + ", ");
+			System.out.println();
+				
+		} else {
+			System.out.println("존재하지 않는 아이디입니다.");
+		}
 	
+	
+	
+	}
+	
+	private void findByKeyword() {
 		
+		System.out.println("\n회원 이름 키워드로 검색");
+		System.out.println("검색하고자 하는 키워드를 입력해주세요 > ");
+		String keyword = sc.nextLine();
 		
+		List<Member> members = mc.findByKeyword(keyword);
 		
+		if(members.isEmpty()) {
+			System.out.println("조회결과가 존재하지 않습니다.");
+			
+		} else {
+			
+			for(int i = 0; i < members.size(); i++) {
+				System.out.println((i + 1) + "번 째 조회 결과!");
+				System.out.println(members.get(i));
+			}
+		}
+		
+	}
+	
+	private void update() {
+		
+		System.out.println("\n회원 정보 수정 서비스입니다.");
+		
+		// 아이디랑 비밀번호랑 새 비밀번호 받아서
+		// 아이디랑 비밀번호가 있는 거 있으면 새비밀번호로 바꾸기
+		System.out.print("아이디를 입력해주세요 > ");
+		String userId = sc.nextLine();
+		System.out.print("비밀번호를 입력해주세요 > ");
+		String userPwd = sc.nextLine();
+		System.out.print("새 비밀번호를 입력해주세요 > ");
+		String newPassword = sc.nextLine();
+		
+		int result = mc.update(userId, userPwd, newPassword);
+		
+		if(result > 0) {
+			System.out.println("비밀번호 변경에 성공했습니다.");
+			
+		} else {
+			System.out.println("비밀번호도 모르냐 에잉 쯧쯧");
+		}
+		
+	}
+	
+	private void delete() {
+		System.out.println("안녕히가세요");
+		System.out.print("아이디 주세요 > ");
+		String userId = sc.nextLine();
+		System.out.print("비밀번호 주세요 > ");
+		String userPwd = sc.nextLine();
+		
+		int result = mc.delete(userId, userPwd);
+		
+		if(result > 0) {
+			System.out.println("성공했습니다.");
+			
+	} else {
+		System.out.println("실패했습니다.");
 	}
 	
 	
 	
-	
+	}
 }

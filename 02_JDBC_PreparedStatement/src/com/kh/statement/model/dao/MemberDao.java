@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.kh.statement.model.vo.Member;
@@ -387,9 +388,81 @@ public Member findById(String userId) {
 	    
 	    // 8) 결과 반환
 	    return member;
+	    }
 }
-
+	    
+public List<Member> findByKeyword(String keyword) {	   
+	    
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rset = null;
+	    List<Member> members = new ArrayList();
+	    
+	    String sql = """
+	    			   SELECT
+	    			          USERNO
+	    			        , USERID
+	    			        , USERPWD
+	    			        , USERNAME
+	    			        , EMAIL
+	    			        , ENROLLDATE
+	    			     FROM
+	    			          MEMBER
+	    			    WHERE
+	    			          USERNAME LIKE '%'||?||'%'
+	    		        ORDER
+	    		           BY
+	    		              ENROLLDATE DESC       	
+	    		     """;
+	    
+	    
+	 try {
+	    Class.forName(DRIVER);
+	    conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+	    pstmt = conn.prepareStatement(sql);
+	    
+	   // pstmt.setString(1, "%" + keyword + "%");
+	    pstmt.setString(1, keyword);
+	    
+	    rset = pstmt.executeQuery();
+	    
+	    while(rset.next()) {
+	    	members.add(new Member(rset.getInt("USERNO")
+	    			             ,rset.getString("USERID")
+	    			             ,rset.getString("USERPWD")
+	    			             ,rset.getString("USERNAME")
+	    			             ,rset.getString("EMAIL")
+	    			             ,rset.getDate("ENROLLDATE")));
+	    			
+	    }
+	    	
+	    
+	    
+	   } catch(ClassNotFoundException e) {
+		   e.printStackTrace();
+	   } catch(SQLException e) {
+		   e.printStackTrace();
+	   } finally {
+		   try {
+			   if(rset != null)
+		   rset.close();
+		   } catch(SQLException e) {
+			   e.printStackTrace();
+		   } try {
+			   if(pstmt != null)
+				   pstmt.close();
+}  
+	   
+	    catch(SQLException e) {
+		   e.printStackTrace();
+	   } try {
+		   if(conn != null) {
+			   conn.close();
+		   }
+} catch(SQLException e) {
+	e.printStackTrace();
 }
-
+}
+}
 }
 

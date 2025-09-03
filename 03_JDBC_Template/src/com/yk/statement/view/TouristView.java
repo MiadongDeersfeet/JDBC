@@ -46,6 +46,7 @@ public class TouristView {
 		System.out.print("목적지를 입력해주세요 > ");
 		String destination = sc.nextLine();
 		
+		
 		int result = tc.book(touristName, touristNo, phone, destination);
 		
 		if(result > 0) {

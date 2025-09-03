@@ -11,18 +11,15 @@ public class Tourist {
 	private String destination;
 	private Date enrollDate;
 	
-	public Tourist() {
+	
+	public Tourist(String touristName, String touristNo, String phone, String destination) {
 		super();
+		this.touristName = touristName;
+		this.touristNo = touristNo;
+		this.phone = phone;
+		this.destination = destination;
 	}
 
-	public Tourist(String touristName, String touristNo, String phone, String destination) {
-	    super();
-	    this.touristName = touristName;
-	    this.touristNo = touristNo;
-	    this.phone = phone;
-	    this.destination = destination;
-	}
-	
 	public Tourist(int touristId, String touristName, String touristNo, String phone, String destination,
 			Date enrollDate) {
 		super();
@@ -38,55 +35,31 @@ public class Tourist {
 		return touristId;
 	}
 
-	public void setTouristId(int touristId) {
-		this.touristId = touristId;
-	}
 
 	public String getTouristName() {
 		return touristName;
 	}
 
-	public void setTouristName(String touristName) {
-		this.touristName = touristName;
-	}
 
 	public String getTouristNo() {
 		return touristNo;
 	}
 
-	public void setTouristNo(String touristNo) {
-		this.touristNo = touristNo;
-	}
 
 	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
 
 	public String getDestination() {
 		return destination;
 	}
 
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
 
 	public Date getEnrollDate() {
 		return enrollDate;
 	}
 
-	public void setEnrollDate(Date enrollDate) {
-		this.enrollDate = enrollDate;
-	}
-
-	@Override
-	public String toString() {
-		return "Tourist [touristId=" + touristId + ", touristName=" + touristName + ", touristNo=" + touristNo
-				+ ", phone=" + phone + ", destination=" + destination + ", enrollDate=" + enrollDate + "]";
-	}
 
 	@Override
 	public int hashCode() {

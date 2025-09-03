@@ -11,7 +11,17 @@ public class Tourist {
 	private String destination;
 	private Date enrollDate;
 	
+		
 	
+	public Tourist() {
+		super();
+	}
+
+	public Tourist(String touristName, String toursitNo) {
+		super();
+		this.touristName = touristName;
+		this.touristNo = touristNo;
+	}
 	public Tourist(String touristName, String touristNo, String phone, String destination) {
 		super();
 		this.touristName = touristName;
@@ -20,7 +30,7 @@ public class Tourist {
 		this.destination = destination;
 	}
 
-	public Tourist(int touristId, String touristName, String touristNo, String phone, String destination,
+	public Tourist(int touristId, String touristName, String touristNo, String phone, String destination, 
 			Date enrollDate) {
 		super();
 		this.touristId = touristId;
@@ -59,7 +69,6 @@ public class Tourist {
 	public Date getEnrollDate() {
 		return enrollDate;
 	}
-
 
 	@Override
 	public int hashCode() {

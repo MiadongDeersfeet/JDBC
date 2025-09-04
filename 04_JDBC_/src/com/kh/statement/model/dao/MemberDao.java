@@ -1,0 +1,246 @@
+package com.kh.statement.model.dao;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.InvalidPropertiesFormatException;
+import java.util.List;
+import java.util.Properties;
+
+import com.kh.common.JDBCTemplate;
+import com.kh.statement.model.dto.PasswordDTO;
+import com.kh.statement.model.vo.Member;
+
+public class MemberDao {
+	
+	private Properties prop = new Properties();
+	
+	
+	// 메소드 호출할 때마다
+	// xml파일로부터 Properties 객체로 입력받는 코드를 써야함 중복이다
+	// new MemberDao().XXX
+	public MemberDao() {
+		try {
+			prop.loadFromXML(new FileInputStream("resources/member-mapper.xml"));
+		} catch (InvalidPropertiesFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	public int save(Connection conn, Member member) {
+		
+		
+		// 0) 필요한 변수 세팅
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		try {
+			prop.loadFromXML(new FileInputStream("resources/member-mapper.xml"));
+		} catch (InvalidPropertiesFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		String sql = prop.getProperty("save");
+				
+		// 1) Driver 등록
+		// 2) Connection 생성
+		
+		// 3) Statement 생성
+		
+		try {
+			// 3_1) PreparedStatement 객체 생성(SQL문 미리 보내기)
+			pstmt = conn.prepareStatement(sql);
+			
+			// 3_2) 미완성된 SQL문일 경우 묶어줄 값 전달하기
+			pstmt.setString(1, member.getUserId());
+			pstmt.setString(2, member.getUserPwd());
+			pstmt.setString(3, member.getUserName());
+			pstmt.setString(4, member.getEmail());
+			
+			// 4, 5) DB에 완성된 SQL문을 실행한 결과(int) 받기
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// 7_1) conn은 Service로 넘어가서 써야해요. 여기서는 pstmt객체만 반납합니다.
+			JDBCTemplate.close(pstmt);
+		}
+		
+		// 7) 자원반납
+		// 8) 결과반환
+		
+		return result;
+	}
+	
+	public List<Member> findAll(Connection conn) {
+		
+		// 0) 필요한 변수 선언 먼저!
+		// PreparedStatement, ResultSet, SQL문, List
+		List<Member> members = new ArrayList();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		//prop.loadFromXML(new FileInputStream("")); <= 기본생성자에 뒀음
+		String sql = prop.getProperty("findAll");
+                                
+					 
+		// 3_1) PreparedStatement 객체 생성(SQL문을 인자로 전달하기)
+		
+	 	try {
+			pstmt = conn.prepareStatement(sql);
+			
+			// 4, 5) SQL문을 실행하고 결과(ResultSet) 받기
+		 	rset = pstmt.executeQuery();
+		 	
+			// 6) 조회결과 여부 판단 후 => 커서 내려야함 -- rset.next()
+		 	//    컬럼값을 객체 필드에 매핑
+		 	while(rset.next()) {
+		 		Member member = new Member(rset.getInt("USERNO")
+		 				                  ,rset.getString("USERID")
+		 				                  ,rset.getString("USERPWD")
+		 				                  ,rset.getString("USERNAME")
+		 				                  ,rset.getString("EMAIL")
+		 				                  ,rset.getDate("ENROLLDATE"));
+		 		
+		 		members.add(member);
+		 	} 
+		 	
+		 	
+		 	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// 7) 사용이 다 끝난 JDBC용 객체 반납
+			JDBCTemplate.close(rset);
+			JDBCTemplate.close(pstmt);
+		}
+	 	// 8) 결과반환
+	 	return members;
+		
+		
+	}
+	
+	public Member findById(Connection conn, String userId) {
+		
+		Member member = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("findById");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userId);
+			rset = pstmt.executeQuery();
+			
+			if(rset.next()) {
+				member = new Member(rset.getInt("USERNO")
+						           ,rset.getString("USERID")
+						           ,rset.getString("USERPWD")
+						           ,rset.getString("USERNAME")
+						           ,rset.getString("EMAIL")
+						           ,rset.getDate("ENROLLDATE"));
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return member;
+	}
+	
+	public List<Member> findByKeyword(Connection conn, String keyword) {
+		
+		List<Member> members = new ArrayList();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String sql = prop.getProperty("findByKeyword");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, keyword);
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				members.add(new Member(rset.getInt("USERNO")
+						              ,rset.getString("USERID")
+						              ,rset.getString("USERPWD")
+						              ,rset.getString("USERNAME")
+						              ,rset.getString("EMAIL")
+						              ,rset.getDate("ENROLLDATE")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(rset);
+			JDBCTemplate.close(pstmt);
+		}
+		return members;
+				
+	}
+	
+	public int update(Connection conn, PasswordDTO pd) {
+		
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("update");
+					   
+		try {
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, pd.getNewPassword());
+		pstmt.setString(2, pd.getUserId());
+		pstmt.setString(3, pd.getUserPwd());
+		result = pstmt.executeUpdate();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTemplate.close(pstmt);
+		}
+		return result;
+	}
+ 
+	public int delete(Connection conn, Member member) {
+		// 0)
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("delete");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getUserId());
+			pstmt.setString(2, member.getUserPwd());
+			result = pstmt.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// 7)
+			JDBCTemplate.close(pstmt);
+		}
+		
+		// 8)
+		return result;
+	}
+	
+ }
+ 
+ 
